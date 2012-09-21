@@ -5,11 +5,12 @@ function! s:sort(a, b)
 endfunction
 
 function! s:fortune()
+  let my_sign = get(g:, 'todaysfortune_my_sign', '')
   let date = strftime("%Y/%m/%d")
   let obj = webapi#json#decode(webapi#http#get("http://api.jugemkey.jp/api/horoscope/free/".date).content)
   let data = sort(obj["horoscope"][date], function("s:sort"))
   for i in range(len(data))
-    echohl Title
+    if my_sign == data[i].sign | echohl Todo | else | echohl Title | endif
     echo printf("%02d位 %s", i+1, data[i].sign)
     echohl None
     echo data[i].content
